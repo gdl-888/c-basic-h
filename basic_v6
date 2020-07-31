@@ -1,5 +1,5 @@
-#include <windows.h>  /* C는 착해서 stdio 따로 안해도 됨 */
-#undef _NO_OLDNAMES  /* 이토아 쓰려면 해야함 */
+#include <windows.h>
+#undef _NO_OLDNAMES
 #define function
 #define program(name) main()
 #define elseif else if
