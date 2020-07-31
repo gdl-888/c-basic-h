@@ -1,0 +1,163 @@
+#include <windows.h>  /* C는 착해서 stdio 따로 안해도 됨 */
+#undef _NO_OLDNAMES  /* 이토아 쓰려면 해야함 */
+#define function
+#define program(name) main()
+#define elseif else if
+#define forever while(1)
+#define true 1
+#define false 0
+#define set
+#define as =
+#define update
+#define by +=
+#define equ ==
+#define neq !=
+#define geq >=
+#define leq <=
+#define gtr >
+#define lss <
+#define checklist short int
+#define mark
+#define checked 1
+#define memory
+#define initialized
+#define when ;
+#define step ;
+#define until(exp) while(!(exp))
+#define loop
+#define or ||
+#define and &&
+#define not !
+#define count(i,s,e,t) for(i=s;i<=e;i+=t)
+#define selectcase switch
+#define ultra long long
+#define other default:
+#define rnd rand()%
+#define randomize srand(
+#define timer time(0))
+/* const rand = (s, e) => Math.random() * (e + 1 - s) + s; */
+#define randnum(s,e) rnd(e+1-s) + s
+#define randint(s,e) (int)(rnd(e+1-s) + s)
+#define case(x) break;case x:  /* 스위치에서 첫 케이스 위 코드는 무시돼서 이렇게 해도 됨 */
+#define input(prompt,variable) printf(prompt);scanf("%i",&variable)
+#define pause(prompt) printf(prompt);getch()
+#define swap(a,b) int _0xa52fc7=a;a=b;b=_0xa52fc7
+
+#ifdef __SIGNAL_H  /* 확실하지는 않지만 터보씨 감지 */
+#define printf cprintf
+#define setcolor(t, b) textcolor(t);textbackground(b)
+#define cls clrscr()
+#define Sleep(x)
+
+#else
+/* 일단 setcolor는 안 쓸 듯하지만 */
+function setcolor(short int t, short int b)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), t | (b << 4));
+}
+
+function gotoxy(int x, int y)
+{
+    COORD xy;
+    xy.X = x;
+    xy.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), xy);
+}
+#define cls system("cls")
+#define delay Sleep
+
+#endif
+
+#define putsxy(x, y, text) gotoxy(x,y);puts(text)  /* 이름이 뭔가 이상하다..? */
+
+program(로또 게임)
+{
+    randomize timer;  /* 매크로를 대입하면 "srand("와 "time(0))" => "srand( time(0))"이 되어서 컴파일 됨 */
+
+    #define num(x) num[x]  /* 배열 인덱스에서 소괄호 쓰기 위해. */
+    #define inp(x) inp[x]
+    int memory num(7), inp(7);
+    int memory i, j;
+
+    count(i, 1, 6, 1)
+        {
+            set num(i) as randint(10, 99);
+        }
+
+    /* 정렬(6개밖에 안 돼서 쉬운 알고리즘으로) */
+    count(i, 1, 5, 1)
+        {
+            count(j, i, 6, 1)
+                {
+                    if(num(i) gtr num(j))
+                        {
+                            swap(num(i), num(j));
+                        }
+                }
+        }
+
+    cls;
+
+    puts("숫자를 입력하시오. 10부터 99까지입니다.");
+
+    putsxy(1, 3, "┌─┐┌─┐┌─┐┌─┐┌─┐┌─┐");
+    putsxy(1, 4, "│__││__││__││__││__││__│");
+    putsxy(1, 5, "└─┘└─┘└─┘└─┘└─┘└─┘");
+
+    #define pos(x,y) pos[x][y]
+    const int pos(7, 3) = {
+        {0,  0},
+        {3,  4},
+        {9,  4},
+        {15, 4},
+        {21, 4},
+        {27, 4},
+        {33, 4},
+    };
+
+    count(i, 1, 6, 1)
+        {
+            gotoxy(pos(i, 0), pos(i, 1));
+            int memory _10, _1;
+
+getinput_10:
+            _10 = getch();
+            if(not (_10 geq 49 and _10 leq 57)) goto getinput_10;
+            putchar(_10);
+            _10 -= 48;
+
+getinput_1:
+            _1 = getch();
+            if(not (_1 geq 48 and _1 leq 57)) goto getinput_1;
+            putchar(_1);
+            _1 -= 48;
+
+            inp(i) = _10*10 + _1;
+        }
+
+    putsxy(1, 7, "┌─┐┌─┐┌─┐┌─┐┌─┐┌─┐");
+    putsxy(1, 8, "│__││__││__││__││__││__│");
+    putsxy(1, 9, "└─┘└─┘└─┘└─┘└─┘└─┘");
+
+    int win = true;
+
+    count(i, 1, 6, 1)
+        {
+            delay(1000);
+            gotoxy(pos(i, 0), pos(i, 1) + 4);
+            printf("%d", num(i));
+
+            if(num(i) neq inp(i)) win = false;
+        }
+
+    puts("\n\n\n");
+
+    if(win)
+        {
+            puts("축하합니다.");
+        }
+    else
+        {
+            puts("다음에 또 오세요~");
+        }
+}
